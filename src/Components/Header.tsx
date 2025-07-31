@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import Loading from "./Loading";
 import { TempContext } from "../Providers/TempToggle";
-
-const apiKey = "c65af87ae0f4647d7ac8883b694261b1";
+import {WeatherApi} from "../API/Weatherapi";
+import { apiKey } from "../API/Weatherapi"
 
 type CityType = {
     name: string;
@@ -23,7 +23,7 @@ const Header = () => {
         navigator.geolocation.getCurrentPosition(
             ({ coords }) => {
                 fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?lat=${coords.latitude}&lon=${coords.longitude}&appid=${apiKey}&units=${unit}`
+                    `${WeatherApi}weather?lat=${coords.latitude}&lon=${coords.longitude}&appid=${apiKey}&units=${unit}`
                 )
                     .then((res) => res.json())
                     .then((data) => setCity(data))

@@ -28,13 +28,13 @@ const FavoriteCityItem = ({ city }: FavoriteCityItemProps) => {
             >
                 See Forecast
             </Button>
-            <Modal title="Delete city?"
-                   content={`Are you sure you want to remove "${city}" from favorites?`}
-                   trigger={<Button type="secondary" size="small">Remove</Button>}
-                   city={city}
-                   removeCity={removeCity}
-            >
-            </Modal>
+            <Modal
+                title="Delete city?"
+                content={`Are you sure you want to remove "${city}" from favorites?`}
+                trigger={<Button type="secondary" size="small">Remove</Button>}
+                city={city}
+                removeCity={removeCity}
+            />
         </li>
     )
 }

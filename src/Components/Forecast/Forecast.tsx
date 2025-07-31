@@ -9,7 +9,8 @@ import { FavoriteContext } from "../../Providers/FavoriteCity";
 import { WeatherContext } from "../../Providers/WeatherProvider";
 import { TempContext } from "../../Providers/TempToggle";
 
-import type { ForecastEntry, ForecastDayType } from "../../Types/Weather";
+import type { ForecastEntry, ForecastDayType } from "../../Types/Weather"
+import { normalizeCityName, capitalizeCityName } from "../../Types/City";
 
 function Forecast() {
     const { forecastState, validateCity, loading, error, setError } = useContext(WeatherContext);
@@ -41,18 +42,17 @@ function Forecast() {
         return result;
     }, [city, unit, validateCity]);
 
+    const normalizedCity = normalizeCityName(city);
     const isFavorite = favorites.some(
-        (fav) => fav.toLowerCase() === city.trim().toLowerCase()
+        (fav) => normalizeCityName(fav) === normalizedCity
     );
-
-    const normalizeCity = (name: string) =>
-        name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
     const handleToggleFavorite = () => {
         const trimmedCity = city.trim();
         if (!trimmedCity) return;
 
-        const capitalized = normalizeCity(trimmedCity);
+
+        const capitalized = capitalizeCityName(trimmedCity);
 
         const alreadyFavorite = favorites.includes(capitalized);
 

@@ -1,5 +1,8 @@
 import { createContext, useState } from "react"
 import type { ForecastStateType, ForecastDayType, ValidateResult, ForecastEntry } from "../Types/Weather";
+import { WeatherApi } from "../API/Weatherapi";
+import { apiKey } from "../API/Weatherapi"
+import { normalizeCityName, capitalizeCityName } from "../Types/City.ts";
 
 type WeatherContextType = {
     loading: boolean;
@@ -12,16 +15,14 @@ type WeatherContextType = {
 
 export const WeatherContext = createContext<WeatherContextType>({} as WeatherContextType);
 
-const apiKey = "c65af87ae0f4647d7ac8883b694261b1";
-
 function WeatherProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [forecastState, setForecastState] = useState<ForecastStateType | null>(null);
 
     const validateCity = async (city: string, unit: string): Promise<ValidateResult>  => {
-        const trimmed = city.trim();
-        if (!trimmed) {
+        const normalized = normalizeCityName(city);
+        if (!normalized) {
             setError("City cannot be empty.");
             return { ok: false };
         }
@@ -30,7 +31,7 @@ function WeatherProvider({ children }: { children: React.ReactNode }) {
 
         try {
             const res = await fetch(
-                `https://api.openweathermap.org/data/2.5/forecast?q=${trimmed}&appid=${apiKey}&units=${unit}`
+                `${WeatherApi}forecast?q=${normalized}&appid=${apiKey}&units=${unit}`
             );
             if (!res.ok) throw new Error();
 
@@ -47,7 +48,7 @@ function WeatherProvider({ children }: { children: React.ReactNode }) {
                 return acc;
             }, []);
 
-            const cityName = data.city.name;
+            const cityName = capitalizeCityName(data.city.name);
 
             return { ok: true, forecast: grouped, city: cityName };
         } catch {

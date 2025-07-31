@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
-import type { FormEvent } from "react";
+import { useState, useContext, type FormEvent } from "react";
 import { FavoriteContext } from "../../Providers/FavoriteCity";
-import { WeatherContext } from "../../Providers/WeatherProvider";
+import { WeatherContext } from "../../Providers/WeatherProvider"
+import { normalizeCityName } from "../../Types/City";
 import Button from "../Button";
 
 function AddCity()  {
@@ -13,16 +13,24 @@ function AddCity()  {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        const normalizedCity = normalizeCityName(newCity);
+        if (!normalizedCity) {
+            setError("City cannot be empty.");
+            return;
+        }
+
+        const isAlreadyFavorite = favorites.some(
+            (fav) => fav.toLowerCase() === normalizedCity
+        );
+        if (isAlreadyFavorite) {
+            setError("This city is already in your favorites.");
+            return;
+        }
 
         const result = await validateCity(newCity, "metric");
         if (!result.ok) {
             setError(result.error);
             return
-        }
-
-        if (favorites.includes(result.city)) {
-            setError("This city is already in your favorites.");
-            return;
         }
 
         addCity(result.city);
@@ -34,7 +42,7 @@ function AddCity()  {
         <form onSubmit={handleSubmit} className="flex flex-col items-center mt-2 bg-white border border-orange-500">
             <input
                 type="text"
-                placeholder=" Enter your favorite city    "
+                placeholder="Enter your favorite city"
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}
                 className="p-2 text-orange-500 placeholder-orange-500 outline-none"

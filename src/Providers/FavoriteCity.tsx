@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react"
+import { normalizeCityName } from "../Types/City";
 
 type FavoriteContextType = {
     favorites: string[];
@@ -26,10 +27,11 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
 
     const addCity = (city: string) => {
         const trimmed = city.trim();
-        const normalized = trimmed.toLowerCase();
+        if (!trimmed) return;
 
-        const normalizedFavorites = favorites.map((c) => c.toLowerCase());
-        if (!trimmed || normalizedFavorites.includes(normalized)) return;
+        const normalized = normalizeCityName(trimmed);
+        const normalizedFavorites = favorites.map((c) => normalizeCityName(c));
+        if (normalizedFavorites.includes(normalized)) return;
 
         setFavorites([...favorites, trimmed]);
     };

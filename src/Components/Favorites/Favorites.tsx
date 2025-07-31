@@ -14,6 +14,7 @@ const Favorites = () => {
             <h2 className="text-2xl font-semibold my-4 text-gray-800 leading-snug text-center">My Favorite Cities</h2>
             <div className="flex items-start justify-center gap-4">
                 <div>
+                    {loading && <Loading size="medium" tip="Loading..."/>}
                     <ul>
                         {favorites.map((city) => (
                             <FavoriteCityItem key={city} city={city} onRemove={removeCity}/>
@@ -24,7 +25,6 @@ const Favorites = () => {
                     <AddCity />
                 </div>
             </div>
-            {loading && <Loading size="medium" tip="Loading..."/>}
         </div>
     )
 }
